@@ -1,0 +1,19 @@
+body {
+    background-color: #cfcfcf;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    cursor: pointer;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+}
