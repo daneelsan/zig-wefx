@@ -2,6 +2,8 @@
 
 WEFX is a simple graphics drawing package using Zig, WASM, and an HTML canvas.
 
+See it live at: https://daneelsan.github.io/zig-wefx/
+
 ![example1](./example1.gif)
 
 This is a port of the C implementation found in https://github.com/robrohan/wefx.
