@@ -19,9 +19,4 @@ pub fn build(b: *std.build.Builder) void {
     lib.addPackagePath("WEFX", "./wefx/WEFX.zig");
     lib.setOutputDir("./public/");
     lib.install();
-
-    const step = b.step("example0", "Compiles examples/example1.zig");
-    step.dependOn(&lib.step);
-
-    // WEFX
 }
