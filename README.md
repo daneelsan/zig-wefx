@@ -51,7 +51,7 @@ To write an app, the user will have to define two callbacks in a .zig file:
 | `export fn init() ?*WEFX` | called once at the start of the app (should return a pointer to a WEFX instance) |
 | `export fn main_loop(time: f32) void` | called every frame with time being time since app start |
 
-These callbacks will be called from the [script.js](./public/script.js) file.
+These callbacks will be called from the [script.js](./docs/script.js) file.
 
 ## Build
 
@@ -63,11 +63,11 @@ The [build.zig](./build.zig) file by default builds the example1.zig file:
 $ zig build -Drelease=true
 ```
 
-The output binary is called wefx.wasm and is stored in the public/ directory:
+The output binary is called wefx.wasm and is stored in the docs/ directory:
 
 ```shell
-$ ls public/*.wasm
-public/wefx.wasm
+$ ls docs/*.wasm
+docs/wefx.wasm
 ```
 
 The user can simply modify the contents of the [example1.zig](./examples/example1.zig) file, or write a new file and modify the build.zig file to build it.

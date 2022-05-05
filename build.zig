@@ -17,6 +17,6 @@ pub fn build(b: *std.build.Builder) void {
         //.abi = .musl,
     });
     lib.addPackagePath("WEFX", "./wefx/WEFX.zig");
-    lib.setOutputDir("./public/");
+    lib.setOutputDir("./docs/");
     lib.install();
 }
