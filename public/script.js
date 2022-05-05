@@ -7,7 +7,7 @@ const WEFX_MOUSEDOWN = 4;
 const WEFX_MOUSEUP = 5;
 const WEFX_CLICK = 6;
 
-const SIZE_OF_INT = 4; // TODO
+const PIXEL_SIZE = 4; // TODO
 
 const canvas = document.getElementById("screenCanvas");
 const ctx = canvas.getContext("2d");
@@ -26,28 +26,34 @@ async function bootstrap() {
 
     const memory = instance.exports.memory;
 
+    // Exported functions defined by the user
     const init = instance.exports.init;
     const main_loop = instance.exports.main_loop;
 
-    const wefx_screen_offset = instance.exports.wefx_screen_offset;
-    const wefx_draw = instance.exports.wefx_draw;
+    // Exported functions defined by the wefx library
     const wefx_width = instance.exports.wefx_width;
     const wefx_height = instance.exports.wefx_height;
+    const wefx_screen_offset = instance.exports.wefx_screen_offset;
+    const wefx_flush = instance.exports.wefx_flush;
     // const wefx_add_queue_event = instance.exports.wefx_add_queue_event;
 
-    const err = init();
-    if (err) {
+    // The user-defined init() function returns a pointer to a WEFX instance
+    const wefx_ptr = init();
+    if (wefx_ptr == null) {
         console.error("Initialization failed");
         return;
     }
 
-    const width = wefx_width();
-    const height = wefx_height();
+    // Both the width and the height of the screen is defined in the wasm module
+    const width = wefx_width(wefx_ptr);
+    const height = wefx_height(wefx_ptr);
     canvas.width = width;
     canvas.height = height;
 
-    const offset = wefx_screen_offset();
-    const imgArray = new Uint8ClampedArray(memory.buffer, offset, SIZE_OF_INT * width * height);
+    // wefx_screen_offset returns the offset in the memory where the array of pixels starts
+    const offset = wefx_screen_offset(wefx_ptr);
+    const imgArray = new Uint8ClampedArray(memory.buffer, offset, PIXEL_SIZE * width * height);
+    const image = new ImageData(imgArray, width);
 
     // const toWefxEvent = (t, e, canvas) => {
     //     const xy = relativeXY(e, canvas);
@@ -63,14 +69,12 @@ async function bootstrap() {
     // canvas.addEventListener("mousemove", (e) => toWefxEvent(WEFX_MOUSEMOVE, e, canvas));
 
     let start = Date.now();
-    const image = new ImageData(imgArray, width);
-
     const loop = (t) => {
         const current = Date.now();
         const delta = current - start;
 
         main_loop(delta * 0.05);
-        wefx_draw(offset);
+        wefx_flush(wefx_ptr);
 
         ctx.putImageData(image, 0, 0);
 
