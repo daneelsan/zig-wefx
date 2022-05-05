@@ -1,5 +1,4 @@
 const std = @import("std");
-const utils = @import("utils.zig");
 
 const Allocator = std.mem.Allocator;
 const assert = std.debug.assert;
@@ -63,7 +62,7 @@ pub fn close(self: *Self) void {
 /// wefx.clearColor(r, g, b) sets the background color to RGB(r, g, b).
 /// A subsequent call to wefx.clear() will "clear" the screen by setting every pixel to said color.
 pub fn clearColor(self: *Self, r: u8, g: u8, b: u8) void {
-    self.background_color = utils.fromRGB(r, g, b);
+    self.background_color = fromRGB(r, g, b);
 }
 
 /// wefx.clear() sets every pixel to the background color.
@@ -76,7 +75,7 @@ pub fn clear(self: *Self) void {
 
 /// wefx.color(r, g, b) sets the foreground color to RGB(r, g, b).
 pub fn color(self: *Self, r: u8, g: u8, b: u8) void {
-    self.foreground_color = utils.fromRGB(r, g, b);
+    self.foreground_color = fromRGB(r, g, b);
 }
 
 /// wefx.point(x, y) sets the value of the pixel located at (x, y) to the foreground color.
@@ -161,6 +160,16 @@ pub fn flush(self: *Self) void {
     for (self.buffer) |val, i| {
         self.screen[i] = val;
     }
+}
+
+// Utilities
+
+inline fn fromRGB(r: u8, g: u8, b: u8) u32 {
+    return fromRGBA(r, g, b, 0xFF);
+}
+
+inline fn fromRGBA(r: u8, g: u8, b: u8, a: u8) u32 {
+    return (@as(u32, a) << 24) + (@as(u32, r) << 16) + (@as(u32, g) << 8) + (@as(u32, b) << 0);
 }
 
 // Exported functions
