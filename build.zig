@@ -16,7 +16,7 @@ pub fn build(b: *std.build.Builder) void {
         .os_tag = .freestanding,
         //.abi = .musl,
     });
-    lib.addPackagePath("wefx", "./wefx/wefx.zig");
+    lib.addPackagePath("wefx", "./wefx/main.zig");
     lib.setOutputDir("./public/");
     lib.install();
 
