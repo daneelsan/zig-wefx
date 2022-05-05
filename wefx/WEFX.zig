@@ -137,7 +137,7 @@ pub fn line(self: *Self, x0: u32, y0: u32, x1: u32, y1: u32) void {
 pub fn circle(self: *Self, x0: u32, y0: u32, r0: u32) void {
     var x: u32 = r0;
     var y: u32 = 0;
-    var err = 0;
+    var err: i64 = 0;
     while (x >= y) {
         self.point(x0 + x, y0 + y);
         self.point(x0 + y, y0 + x);
@@ -149,10 +149,10 @@ pub fn circle(self: *Self, x0: u32, y0: u32, r0: u32) void {
         self.point(x0 + x, y0 - y);
 
         y += 1;
-        err += 2 * y + 1;
+        err += 2 * @as(i64, y) + 1;
         if (err > 0) {
             x -= 1;
-            err -= 2 * x + 1;
+            err -= 2 * @as(i64, x) + 1;
         }
     }
 }
