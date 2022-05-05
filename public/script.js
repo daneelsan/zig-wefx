@@ -31,8 +31,8 @@ async function bootstrap() {
     const main_loop = instance.exports.main_loop;
 
     // Exported functions defined by the wefx library
-    const wefx_width = instance.exports.wefx_width;
-    const wefx_height = instance.exports.wefx_height;
+    const wefx_xsize = instance.exports.wefx_xsize;
+    const wefx_ysize = instance.exports.wefx_ysize;
     const wefx_screen_offset = instance.exports.wefx_screen_offset;
     const wefx_flush = instance.exports.wefx_flush;
     // const wefx_add_queue_event = instance.exports.wefx_add_queue_event;
@@ -44,9 +44,9 @@ async function bootstrap() {
         return;
     }
 
-    // Both the width and the height of the screen is defined in the wasm module
-    const width = wefx_width(wefx_ptr);
-    const height = wefx_height(wefx_ptr);
+    // Both the width and the height of the screen are defined in the wasm module
+    const width = wefx_xsize(wefx_ptr);
+    const height = wefx_ysize(wefx_ptr);
     canvas.width = width;
     canvas.height = height;
 

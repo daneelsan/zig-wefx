@@ -165,11 +165,11 @@ pub fn flush(self: *Self) void {
 
 // Exported functions
 
-export fn wefx_width(self: *Self) u32 {
+export fn wefx_xsize(self: *Self) u32 {
     return self.width;
 }
 
-export fn wefx_height(self: *Self) u32 {
+export fn wefx_ysize(self: *Self) u32 {
     return self.height;
 }
 
