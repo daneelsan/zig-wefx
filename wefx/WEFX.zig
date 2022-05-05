@@ -40,6 +40,7 @@ pub fn init(allocator: Allocator) Self {
     };
 }
 
+/// wefx.open(width, height) allocates memory for both the screen and buffer slices.
 pub fn open(self: *Self, width: u32, height: u32) !void {
     self.width = width;
     self.height = height;
