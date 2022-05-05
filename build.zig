@@ -9,7 +9,7 @@ pub fn build(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
 
     // EXAMPLES
-    const lib = b.addSharedLibrary("wefx", "examples/example0.zig", .unversioned);
+    const lib = b.addSharedLibrary("wefx", "examples/example1.zig", .unversioned);
     lib.setBuildMode(mode);
     lib.setTarget(.{
         .cpu_arch = .wasm32,
@@ -20,7 +20,7 @@ pub fn build(b: *std.build.Builder) void {
     lib.setOutputDir("./public/");
     lib.install();
 
-    const step = b.step("example0", "Compiles examples/example0.zig");
+    const step = b.step("example0", "Compiles examples/example1.zig");
     step.dependOn(&lib.step);
 
     // WEFX
