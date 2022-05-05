@@ -162,3 +162,21 @@ pub fn flush(self: *Self) void {
         self.screen[i] = val;
     }
 }
+
+// Exported functions
+
+export fn wefx_width(self: *Self) u32 {
+    return self.width;
+}
+
+export fn wefx_height(self: *Self) u32 {
+    return self.height;
+}
+
+export fn wefx_screen_offset(self: *Self) [*]u32 {
+    return self.screen.ptr;
+}
+
+export fn wefx_flush(self: *Self) void {
+    self.flush();
+}
