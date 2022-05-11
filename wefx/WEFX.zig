@@ -18,21 +18,14 @@ buffer: []u32 = undefined,
 
 const Self = @This();
 
-// pub const EventType = enum {
-//     key_down,
-//     key_press,
-//     key_up,
-//     mouse_move,
-//     mouse_down,
-//     mouse_up,
-//     click,
-// };
-
-// pub const ButtonType = enum {
-//     none,
-//     left,
-//     right,
-// };
+pub const EventType = enum {
+    keydown,
+    keypress,
+    keyup,
+    mousemove,
+    mousedown,
+    mouseup,
+};
 
 pub fn init(allocator: Allocator) Self {
     return .{
@@ -190,3 +183,21 @@ export fn wefx_screen_offset(self: *Self) [*]u32 {
 export fn wefx_flush(self: *Self) void {
     self.flush();
 }
+
+// comptime {
+//     inline for (@typeInfo(EventType).Enum.fields) |field| {
+//         const enum_val = @intToEnum(EventType, field.value);
+//         const enum_name = @tagName(enum_val);
+//         var field_value = struct {
+//             pub const field_value: i32 = field.value;
+//         }.field_value;
+//         const opts = .{ .name = "wefx_" ++ enum_name, .linkage = .Strong };
+//         @export(field_value, opts);
+//     }
+// }
+export var wefx_keydown = @enumToInt(EventType.keydown);
+export var wefx_keypress = @enumToInt(EventType.keypress);
+export var wefx_keyup = @enumToInt(EventType.keyup);
+export var wefx_mousemove = @enumToInt(EventType.mousemove);
+export var wefx_mousedown = @enumToInt(EventType.mousedown);
+export var wefx_mouseup = @enumToInt(EventType.mouseup);

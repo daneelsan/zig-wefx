@@ -1,12 +1,3 @@
-// TODO: export from WASM?
-const WEFX_KEYDOWN = 0;
-const WEFX_KEYPRESS = 1;
-const WEFX_KEYUP = 2;
-const WEFX_MOUSEMOVE = 3;
-const WEFX_MOUSEDOWN = 4;
-const WEFX_MOUSEUP = 5;
-const WEFX_CLICK = 6;
-
 const PIXEL_SIZE = 4; // TODO
 
 const canvas = document.getElementById("screenCanvas");
@@ -19,6 +10,12 @@ function relativeXY(e, canvas) {
         x: (e.clientX - rect.left) | 0,
         y: (e.clientY - rect.top) | 0,
     };
+}
+
+function getWASMGlobalValue(memory, global) {
+    const memory_array = new Uint8Array(memory.buffer);
+    const global_offset = global.value;
+    return memory_array[global_offset];
 }
 
 async function bootstrap() {
@@ -36,6 +33,14 @@ async function bootstrap() {
     const wefx_screen_offset = instance.exports.wefx_screen_offset;
     const wefx_flush = instance.exports.wefx_flush;
     // const wefx_add_queue_event = instance.exports.wefx_add_queue_event;
+
+    // Exported globals defined by the wefx library
+    const wefx_keydown = getWASMGlobalValue(memory, instance.exports.wefx_keydown);
+    const wefx_keypress = getWASMGlobalValue(memory, instance.exports.wefx_keypress);
+    const wefx_keyup = getWASMGlobalValue(memory, instance.exports.wefx_keyup);
+    const wefx_mousemove = getWASMGlobalValue(memory, instance.exports.wefx_mousemove);
+    const wefx_mousedown = getWASMGlobalValue(memory, instance.exports.wefx_mousedown);
+    const wefx_mouseup = getWASMGlobalValue(memory, instance.exports.wefx_mouseup);
 
     // The user-defined init() function returns a pointer to a WEFX instance
     const wefx_ptr = init();
