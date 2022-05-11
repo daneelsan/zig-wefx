@@ -11,12 +11,14 @@ height: u32 = 0,
 foreground_color: u32 = 0x00_00_00_00,
 background_color: u32 = 0x00_00_00_00,
 
-//event_queue: std.TailQueue(u32),
+event_queue: EventQueue = undefined,
 
 screen: []u32 = undefined,
 buffer: []u32 = undefined,
 
 const Self = @This();
+
+const EventQueue = std.TailQueue(Event);
 
 pub const EventType = enum {
     keydown,
@@ -25,12 +27,99 @@ pub const EventType = enum {
     mousemove,
     mousedown,
     mouseup,
+
+    pub inline fn isKeyboardEvent(event_type: EventType) bool {
+        return event_type == .keydown or event_type == .keypress or event_type == .keyup;
+    }
+
+    pub inline fn isMouseEvent(event_type: EventType) bool {
+        return event_type == .mousemove or event_type == .mousedown or event_type == .mouseup;
+    }
+};
+
+pub const MouseEvent = struct {
+    // alt_key: bool,
+    button: Button,
+    // meta_key: bool,
+    x: u32,
+    y: u32,
+
+    pub const Button = enum {
+        main,
+        auxiliary,
+        secondary,
+        fourth,
+        fifth,
+    };
+};
+
+pub const KeyboardEvent = struct {
+    // alt_key: bool,
+    // ctrl_key: bool,
+    // meta_key: bool,
+    // repeat: bool,
+    // shift_key: bool,
+    key: u8,
+};
+
+pub const Event = struct {
+    timestamp: f32,
+    event_type: EventType,
+    event: union {
+        keyboard: KeyboardEvent,
+        mouse: MouseEvent,
+    },
+
+    pub fn initKeyboardEvent(timestamp: f32, event_type: EventType, kbd_event: KeyboardEvent) Event {
+        assert(event_type.isKeyboardEvent());
+
+        return Event{
+            .timestamp = timestamp,
+            .event_type = event_type,
+            .event = .{
+                .keyboard = kbd_event,
+            },
+        };
+    }
+
+    pub fn initMouseEvent(timestamp: f32, event_type: EventType, mouse_event: MouseEvent) Event {
+        assert(event_type.isMouseEvent());
+
+        return Event{
+            .timestamp = timestamp,
+            .event_type = event_type,
+            .event = .{
+                .mouse = mouse_event,
+            },
+        };
+    }
+
+    pub fn keyboardEvent(self: Event) KeyboardEvent {
+        assert(self.event_type.isKeyboardEvent());
+        return self.event.keyboard;
+    }
+
+    pub fn mouseEvent(self: Event) MouseEvent {
+        assert(self.event_type.isMouseEvent()());
+        return self.event.mouse;
+    }
 };
 
 pub fn init(allocator: Allocator) Self {
     return .{
         .allocator = allocator,
     };
+}
+
+pub fn deinit(self: *Self) void {
+    var it = self.event_queue.first;
+    while (it) |node| {
+        it = node.next;
+        self.allocator.destroy(node);
+    }
+    self.event_queue = undefined;
+
+    self.allocator = undefined;
 }
 
 /// wefx.open(width, height) allocates memory for both the screen and buffer slices.
@@ -156,6 +245,21 @@ pub fn flush(self: *Self) void {
     }
 }
 
+fn eventPushBack(self: *Self, event: Event) !void {
+    var node_ptr = try self.allocator.create(EventQueue.Node);
+    node_ptr.data = event;
+
+    // TODO: set a maximum length for queue?
+    self.event_queue.append(node_ptr);
+}
+
+pub fn eventPopFront(self: *Self) ?Event {
+    const node_ptr = self.event_queue.popFirst() orelse return null;
+    const event = node_ptr.data;
+    self.allocator.destroy(node_ptr);
+    return event;
+}
+
 // Utilities
 
 inline fn fromRGB(r: u8, g: u8, b: u8) u32 {
@@ -182,6 +286,42 @@ export fn wefx_screen_offset(self: *Self) [*]u32 {
 
 export fn wefx_flush(self: *Self) void {
     self.flush();
+}
+
+export fn wefx_add_keyboard_event(
+    self: *Self,
+    event_type_val: u8,
+    timestamp: f32,
+    key: u8,
+) void {
+    const event_type = @intToEnum(EventType, event_type_val);
+    const kbd_event = .{
+        .key = key,
+    };
+    const event = Event.initKeyboardEvent(timestamp, event_type, kbd_event);
+    // TODO: handle error on JS?
+    self.eventPushBack(event) catch unreachable;
+}
+
+export fn wefx_add_mouse_event(
+    self: *Self,
+    event_type_val: u8,
+    timestamp: f32,
+    button_val: u8,
+    x: f32,
+    y: f32,
+) void {
+    const event_type = @intToEnum(EventType, event_type_val);
+    const button = @intToEnum(MouseEvent.Button, button_val);
+
+    const mouse_event = .{
+        .button = button,
+        .x = @floatToInt(u32, x),
+        .y = @floatToInt(u32, y),
+    };
+    const event = Event.initMouseEvent(timestamp, event_type, mouse_event);
+    // TODO: handle error on JS?
+    self.eventPushBack(event) catch unreachable;
 }
 
 // comptime {
