@@ -32,7 +32,8 @@ async function bootstrap() {
     const wefx_ysize = instance.exports.wefx_ysize;
     const wefx_screen_offset = instance.exports.wefx_screen_offset;
     const wefx_flush = instance.exports.wefx_flush;
-    // const wefx_add_queue_event = instance.exports.wefx_add_queue_event;
+    const wefx_add_keyboard_event = instance.exports.wefx_add_keyboard_event;
+    const wefx_add_mouse_event = instance.exports.wefx_add_mouse_event;
 
     // Exported globals defined by the wefx library
     const wefx_keydown = getWASMGlobalValue(memory, instance.exports.wefx_keydown);
@@ -60,18 +61,35 @@ async function bootstrap() {
     const imgArray = new Uint8ClampedArray(memory.buffer, offset, PIXEL_SIZE * width * height);
     const image = new ImageData(imgArray, width);
 
-    // const toWefxEvent = (t, e, canvas) => {
-    //     const xy = relativeXY(e, canvas);
-    //     const k = e.key ? e.key.charCodeAt(0) : 0;
-    //     wefx_add_queue_event(t, e.button, e.timeStamp, k, xy.x, xy.y);
-    // };
+    const addWEFXKeyboardEvent = (ptr, event_type, e) => {
+        const key = e.key ? e.key.charCodeAt(0) : 0;
+        // NOTE: This could be extended to take more metadata, e.g. ctrlKey, altKey, etc.
+        wefx_add_keyboard_event(ptr, event_type, e.timeStamp, key);
+    };
+    const addWEFXMouseEvent = (ptr, t, e, canvas) => {
+        const pos = relativeXY(e, canvas);
+        wefx_add_mouse_event(ptr, t, e.timeStamp, e.button, pos.x, pos.y);
+    };
 
-    // document.addEventListener("keypress", (e) => toWefxEvent(WEFX_KEYPRESS, e, canvas));
-    // document.addEventListener("keydown", (e) => toWefxEvent(WEFX_KEYDOWN, e, canvas));
-    // document.addEventListener("keyup", (e) => toWefxEvent(WEFX_KEYUP, e, canvas));
-    // canvas.addEventListener("mousedown", (e) => toWefxEvent(WEFX_MOUSEDOWN, e, canvas));
-    // canvas.addEventListener("mouseup", (e) => toWefxEvent(WEFX_MOUSEUP, e, canvas));
-    // canvas.addEventListener("mousemove", (e) => toWefxEvent(WEFX_MOUSEMOVE, e, canvas));
+    document.addEventListener("keydown", (e) => {
+        addWEFXKeyboardEvent(wefx_ptr, wefx_keydown, e);
+    });
+    document.addEventListener("keypress", (e) => {
+        addWEFXKeyboardEvent(wefx_ptr, wefx_keypress, e);
+    });
+    document.addEventListener("keyup", (e) => {
+        addWEFXKeyboardEvent(wefx_ptr, wefx_keyup, e);
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+        addWEFXMouseEvent(wefx_ptr, wefx_mousemove, e, canvas);
+    });
+    canvas.addEventListener("mousedown", (e) => {
+        addWEFXMouseEvent(wefx_ptr, wefx_mousedown, e, canvas);
+    });
+    canvas.addEventListener("mouseup", (e) => {
+        addWEFXMouseEvent(wefx_ptr, wefx_mouseup, e, canvas);
+    });
 
     let start = Date.now();
     const loop = (t) => {
