@@ -6,7 +6,7 @@ See it live at: https://daneelsan.github.io/zig-wefx/
 
 ![example1](./example1.gif)
 
-This is a port of the C implementation found in https://github.com/robrohan/wefx.
+This is a port of the original implementation written in C found in https://github.com/robrohan/wefx.
 
 The library aims to serve a similar purpose to [gfx](https://www3.nd.edu/~dthain/courses/cse20211/fall2013/gfx/), in that it is simple and easy to learn. However, instead of having a [X11](https://en.wikipedia.org/wiki/X_Window_System) backend like the gfx library has, WEFX is meant to be compiled into a WASM module where the backend will be both Javascript and HTML5 canvas.
 
