@@ -21,14 +21,31 @@ export fn init() ?*WEFX {
     return &wefx;
 }
 
+fn input(time: f32) void {
+    _ = time;
+
+    while (true) {
+        var event = wefx.eventPopFront() orelse return;
+        switch (event.event_type) {
+            .mousedown => {
+                wefx.clearColor(random.int(u8), random.int(u8), random.int(u8));
+            },
+            .keydown => {
+                const kbd_event = event.keyboardEvent();
+                if (kbd_event.key == 'a') {
+                    wefx.clearColor(random.int(u8), random.int(u8), random.int(u8));
+                }
+            },
+            else => {},
+        }
+    }
+}
+
 fn draw(time: f32) void {
     wefx.clear();
 
     const width = wefx.width;
     const height = wefx.height;
-
-    // int x = time % W;
-    // wefx_point(x, (H / 2) + cos(time) * 2);
 
     const x = @floatToInt(u32, time) % width;
     wefx.point(x, (height / 2) + @floatToInt(u32, math.cos(time) * 2));
@@ -56,5 +73,11 @@ fn draw(time: f32) void {
 }
 
 export fn main_loop(time: f32) void {
+    input(time);
     draw(time);
 }
+
+// export fn deinit() void {
+//     wefx.close();
+//     wefx.deinit();
+// }
