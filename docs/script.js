@@ -19,7 +19,7 @@ function getWASMGlobalValue(memory, global) {
 }
 
 async function bootstrap() {
-    const { instance } = await WebAssembly.instantiateStreaming(fetch("./wefx.wasm"));
+    const { instance } = await WebAssembly.instantiateStreaming(fetch("./wefx-example.wasm"));
 
     const memory = instance.exports.memory;
 

@@ -240,7 +240,7 @@ pub fn circle(self: *Self, x0: u32, y0: u32, r0: u32) void {
 }
 
 pub fn flush(self: *Self) void {
-    for (self.buffer) |val, i| {
+    for (self.buffer, 0..) |val, i| {
         self.screen[i] = val;
     }
 }
@@ -294,7 +294,7 @@ export fn wefx_add_keyboard_event(
     timestamp: f32,
     key: u8,
 ) void {
-    const event_type = @intToEnum(EventType, event_type_val);
+    const event_type: EventType = @enumFromInt(event_type_val);
     const kbd_event = .{
         .key = key,
     };
@@ -311,13 +311,13 @@ export fn wefx_add_mouse_event(
     x: f32,
     y: f32,
 ) void {
-    const event_type = @intToEnum(EventType, event_type_val);
-    const button = @intToEnum(MouseEvent.Button, button_val);
+    const event_type: EventType = @enumFromInt(event_type_val);
+    const button: MouseEvent.Button = @enumFromInt(button_val);
 
     const mouse_event = .{
         .button = button,
-        .x = @floatToInt(u32, x),
-        .y = @floatToInt(u32, y),
+        .x = @as(u32, @intFromFloat(x)), // The @as(...) here shouldn't be necessary
+        .y = @as(u32, @intFromFloat(y)),
     };
     const event = Event.initMouseEvent(timestamp, event_type, mouse_event);
     // TODO: handle error on JS?
@@ -335,9 +335,9 @@ export fn wefx_add_mouse_event(
 //         @export(field_value, opts);
 //     }
 // }
-export var wefx_keydown = @enumToInt(EventType.keydown);
-export var wefx_keypress = @enumToInt(EventType.keypress);
-export var wefx_keyup = @enumToInt(EventType.keyup);
-export var wefx_mousemove = @enumToInt(EventType.mousemove);
-export var wefx_mousedown = @enumToInt(EventType.mousedown);
-export var wefx_mouseup = @enumToInt(EventType.mouseup);
+export var wefx_keydown: c_int = @intFromEnum(EventType.keydown);
+export var wefx_keypress: c_int = @intFromEnum(EventType.keypress);
+export var wefx_keyup: c_int = @intFromEnum(EventType.keyup);
+export var wefx_mousemove: c_int = @intFromEnum(EventType.mousemove);
+export var wefx_mousedown: c_int = @intFromEnum(EventType.mousedown);
+export var wefx_mouseup: c_int = @intFromEnum(EventType.mouseup);

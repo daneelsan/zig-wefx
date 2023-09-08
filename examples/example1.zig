@@ -47,19 +47,19 @@ fn draw(time: f32) void {
     const width = wefx.width;
     const height = wefx.height;
 
-    const x = @floatToInt(u32, time) % width;
-    wefx.point(x, (height / 2) + @floatToInt(u32, math.cos(time) * 2));
+    const x = @as(u32, @intFromFloat(time)) % width;
+    wefx.point(x, (height / 2) + @as(u32, @intFromFloat(math.cos(time) * 2)));
 
     var i: u32 = 0;
     while (i < 130) : (i += 1) {
         wefx.color(0xFF, 0, 0);
-        wefx.point(x - i, (height / 2) + @floatToInt(u32, math.sin(time - @intToFloat(f32, i)) * 3) - 20);
+        wefx.point(x - i, (height / 2) + @as(u32, @intFromFloat(math.sin(time - @as(f32, @floatFromInt(i))) * 3)) - 20);
 
         wefx.color(0, 0xFF, 0);
-        wefx.point(x - i, (height / 2) + @floatToInt(u32, math.cos(time - @intToFloat(f32, i)) * 2));
+        wefx.point(x - i, (height / 2) + @as(u32, @intFromFloat(math.cos(time - @as(f32, @floatFromInt(i))) * 2)));
 
         wefx.color(0, 0, 0xFF);
-        wefx.point(x - i, (height / 2) + @floatToInt(u32, math.sin(time - @intToFloat(f32, i)) * 3) + 20);
+        wefx.point(x - i, (height / 2) + @as(u32, @intFromFloat(math.sin(time - @as(f32, @floatFromInt(i))) * 3)) + 20);
     }
 
     wefx.color(0xFF, 0xFF, 0xFF);

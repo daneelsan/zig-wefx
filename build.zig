@@ -1,22 +1,20 @@
 const std = @import("std");
 
 pub fn build(b: *std.build.Builder) void {
-    // Adds the option -Drelease=[bool] to create a release build, which by
-    // default we set to ReleaseSmall.
-    b.setPreferredReleaseMode(.ReleaseSmall);
-    // Standard release options allow the person running `zig build` to select
-    // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
-
-    // EXAMPLES
-    const lib = b.addSharedLibrary("wefx", "examples/example1.zig", .unversioned);
-    lib.setBuildMode(mode);
-    lib.setTarget(.{
-        .cpu_arch = .wasm32,
-        .os_tag = .freestanding,
-        //.abi = .musl,
+    const wefx_module = b.addModule("WEFX", .{
+        .source_file = .{ .cwd_relative = "wefx/WEFX.zig" },
     });
-    lib.addPackagePath("WEFX", "./wefx/WEFX.zig");
-    lib.setOutputDir("./docs/");
-    lib.install();
+
+    const lib = b.addSharedLibrary(.{
+        .name = "wefx-example",
+        .root_source_file = .{ .path = "examples/example1.zig" },
+        .target = .{
+            .cpu_arch = .wasm32,
+            .os_tag = .freestanding,
+        },
+        .optimize = .ReleaseSmall,
+    });
+    lib.rdynamic = true;
+    lib.addModule("WEFX", wefx_module);
+    b.installArtifact(lib);
 }
