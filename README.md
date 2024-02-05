@@ -60,7 +60,7 @@ These callbacks will be called from the [script.js](./docs/script.js) file.
 The latest `zig`` version this project has been built in is:
 ```shell
 $ zig version
-0.11.0
+0.12.0-dev.2341+92211135f
 ```
 
 There are some examples in the examples/ directory.
@@ -68,20 +68,20 @@ There are some examples in the examples/ directory.
 The [build.zig](./build.zig) file by default builds the example1.zig file:
 
 ```shell
-$ zig build
+$ zig build --verbose
 ```
 
 The output binary is called `wefx-example.wasm` and is stored in the `zig-out/lib/` directory:
 
 ```shell
-$ ls zig-out/lib/*.wasm
-zig-out/lib/wefx-example.wasm
+$ ls zig-out/bin/*.wasm
+zig-out/bin/wefx-example.wasm
 ```
 
 Finally, copy it into the `docs/` directory so that the `script.js` file can load it:
 ```shell
-$ cp zig-out/lib/wefx-example.wasm docs/wefx-example.wasm
-```
+$ cp zig-out/bin/wefx-example.wasm docs/wefx-example.wasm
+```	
 
 The user can simply modify the contents of the [example1.zig](./examples/example1.zig) file, or write a new file and modify the build.zig file to build it.
 

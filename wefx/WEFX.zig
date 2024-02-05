@@ -174,10 +174,10 @@ pub fn line(self: *Self, x0: u32, y0: u32, x1: u32, y1: u32) void {
     assert(x0 <= self.width and y0 <= self.height);
     assert(x1 <= self.width and y1 <= self.height);
 
-    const dx = std.math.absInt(@as(i64, x1) - @as(i64, x0)) catch unreachable;
+    const dx: i64 = @intCast(@abs(@as(i64, x1) - @as(i64, x0)));
     //const sx: i64 = if (x0 < x1) 1 else -1;
 
-    const dy = -1 * (std.math.absInt(@as(i64, y1) - @as(i64, y0)) catch unreachable);
+    const dy = -1 * @as(i64, @intCast(@abs(@as(i64, y1) - @as(i64, y0))));
     //const sy: i64 = if (y0 < y1) 1 else -1;
 
     var err = dx + dy;
