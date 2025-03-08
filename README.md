@@ -60,7 +60,7 @@ These callbacks will be called from the [script.js](./docs/script.js) file.
 The latest `zig`` version this project has been built in is:
 ```shell
 $ zig version
-0.12.0-dev.2341+92211135f
+0.14.0
 ```
 
 There are some examples in the examples/ directory.
