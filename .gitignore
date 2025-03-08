@@ -1,4 +1,4 @@
 c_wefx/
-zig-cache/
+.zig-cache/
 zig-out/
 *.o

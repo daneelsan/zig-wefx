@@ -18,7 +18,7 @@ buffer: []u32 = undefined,
 
 const Self = @This();
 
-const EventQueue = std.TailQueue(Event);
+const EventQueue = std.DoublyLinkedList(Event);
 
 pub const EventType = enum {
     keydown,
@@ -295,7 +295,7 @@ export fn wefx_add_keyboard_event(
     key: u8,
 ) void {
     const event_type: EventType = @enumFromInt(event_type_val);
-    const kbd_event = .{
+    const kbd_event: KeyboardEvent = .{
         .key = key,
     };
     const event = Event.initKeyboardEvent(timestamp, event_type, kbd_event);
@@ -314,7 +314,7 @@ export fn wefx_add_mouse_event(
     const event_type: EventType = @enumFromInt(event_type_val);
     const button: MouseEvent.Button = @enumFromInt(button_val);
 
-    const mouse_event = .{
+    const mouse_event: MouseEvent = .{
         .button = button,
         .x = @as(u32, @intFromFloat(x)), // The @as(...) here shouldn't be necessary
         .y = @as(u32, @intFromFloat(y)),

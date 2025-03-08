@@ -5,7 +5,7 @@ const WEFX = @import("WEFX");
 
 var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 
-var rng = std.rand.DefaultPrng.init(42);
+var rng = std.Random.DefaultPrng.init(42);
 const random = rng.random();
 
 var wefx: WEFX = undefined;

@@ -11,7 +11,7 @@ pub fn build(b: *std.Build) void {
     });
     const exe = b.addExecutable(.{
         .name = "wefx-example",
-        .root_source_file = .{ .path = "examples/example1.zig" },
+        .root_source_file = .{ .cwd_relative = "examples/example1.zig" },
         .target = target,
         .optimize = .ReleaseSmall,
     });
